@@ -25,27 +25,101 @@ local grades = {
 		self:setstate(state);
 	end;
 }; --]]
-local t = LoadFont("Common Normal") .. {
-	InitCommand=cmd(zoom,0.75;shadowlength,1;strokecolor,Color("Black"));
-	ShowCommand=cmd(stoptweening;bounceend,0.15;zoomy,0.75);
-	HideCommand=cmd(stoptweening;bouncebegin,0.15;zoomy,0);
-	SetGradeCommand=function(self,params)
-		local pnPlayer = params.PlayerNumber;
-		local sGrade = params.Grade or 'Grade_None';
-		local gradeString = THEME:GetString("Grade",string.sub(sGrade,7));
 
-		self:settext(gradeString);
-		self:diffuse(PlayerColor(pnPlayer));
-		self:diffusetopedge(BoostColor(PlayerColor(pnPlayer),1.5));
-		self:strokecolor(BoostColor(PlayerColor(pnPlayer),0.25));
-		
---[[ 		if sGrade == "Grade_NoTier" then
-			self:playcommand("Hide");
-		else
-			self:playcommand("Show");
-		end; --]]
-	end;
-};
+
+local song = nil;
+local t = Def.ActorFrame{
+			
+			LoadFont("Common Normal") .. {
+				InitCommand=cmd(zoom,0.75;shadowlength,1;strokecolor,Color("Black"));
+				ShowCommand=cmd(stoptweening;bounceend,0.15;zoomy,0.75);
+				HideCommand=cmd(stoptweening;bouncebegin,0.15;zoomy,0);
+				SetGradeCommand=function(self,params)
+					local pnPlayer = params.PlayerNumber;
+					local sGrade = params.Grade or 'Grade_None';
+					local gradeString = THEME:GetString("Grade",string.sub(sGrade,7));
+
+					self:settext(gradeString);
+					self:diffuse(PlayerColor(pnPlayer));
+					self:diffusetopedge(BoostColor(PlayerColor(pnPlayer),1.5));
+					self:strokecolor(BoostColor(PlayerColor(pnPlayer),0.25));
+					
+			--[[ 		if sGrade == "Grade_NoTier" then
+						self:playcommand("Hide");
+					else
+						self:playcommand("Show");
+					end; --]]
+				end;
+			};
+			-- LoadFont("Common Normal") .. {
+				-- InitCommand=cmd(xy,0,5,zoom,0.3;shadowlength,1;strokecolor,Color("Black"));
+				-- ShowCommand=cmd(stoptweening;bounceend,0.15;zoomy,0.75);
+				-- HideCommand=cmd(stoptweening;bouncebegin,0.15;zoomy,0);
+				-- SetCommand=function(self,params)
+					-- if params.Song then
+						-- song = params.Song;
+					-- end;
+				-- end;
+				-- SetGradeCommand=function(self,params)
+					-- local pnPlayer = params.PlayerNumber;
+					-- local sGrade = params.Grade or 'Grade_None';
+					-- local gradeString = THEME:GetString("Grade",string.sub(sGrade,7));
+					
+					-- if gradeString == "" then
+						-- self:settext("");
+					-- else
+					
+						-- local pn;
+						
+						-- if params.PlayerNumber == "PlayerNumber_P1" then 
+							-- pn = PLAYER_1;
+						-- else
+							-- pn = PLAYER_2;
+						-- end;
+						
+						-- local profile;
+						
+						-- if PROFILEMAN:IsPersistentProfile(params.PlayerNumber) then
+							-- profile = PROFILEMAN:GetProfile(params.PlayerNumber);
+						-- else
+							-- profile = PROFILEMAN:GetMachineProfile();
+						-- end;
+						
+						-- local steps;
+						-- steps = GAMESTATE:GetCurrentSteps(pn);
+						
+						-- if song ~= nil and profile ~= nil and steps ~= nil then
+							
+							-- local stepsType = steps:GetStepsType();
+							-- local stepsDifficulty = steps:GetDifficulty();
+							-- local localSteps = song:GetOneSteps(stepsType,stepsDifficulty);
+							
+							-- if localSteps ~= nil then
+								-- --SCREENMAN:SystemMessage(localSteps:GetFilename())--GetFilename
+								-- local scorelist = profile:GetHighScoreList(song,localSteps);
+								
+								-- local scores = scorelist:GetHighScores();
+								-- local topscore = scores[1];
+								-- if topscore then
+									-- local hs = {};
+									-- hs["PercentDP"]						= string.format("%.2f%%", topscore:GetPercentDP()*100.0);
+										-- if hs["PercentDP"]=="100.00%" then hs["PercentDP"] = "100%"; end;
+									
+									-- self:settext(song:GetDisplayMainTitle().. " "..hs["PercentDP"]);
+								-- else
+								
+								-- end;
+							-- end;
+						-- end;
+						-- self:diffuse(PlayerColor(pnPlayer));
+						-- self:diffusetopedge(BoostColor(PlayerColor(pnPlayer),1.5));
+						-- self:strokecolor(BoostColor(PlayerColor(pnPlayer),0.25));			
+					-- end;
+
+					
+				-- end;
+			-- };
+		};
 
 return t;
 

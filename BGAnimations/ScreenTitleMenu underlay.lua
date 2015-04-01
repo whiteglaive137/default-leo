@@ -3,6 +3,9 @@ InitUserPrefs();
 local t = Def.ActorFrame {
 	BeginCommand=function(self)
 		ThemePrefs.Save()
+		
+		PREFSMAN:SetPreference("MaxHighScoresPerListForPlayer",9999);
+		PREFSMAN:SavePreferences();
 	end;
 };
 

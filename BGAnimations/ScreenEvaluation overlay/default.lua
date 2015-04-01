@@ -1,5 +1,92 @@
 local vStats = STATSMAN:GetCurStageStats();
 
+
+local gradePercentTier = {
+	AAAA	= 1,--THEME:GetMetric("PlayerStageStats", "GradePercentTier01"),	-- 1
+	AAA		= 1,--THEME:GetMetric("PlayerStageStats", "GradePercentTier02"),	-- 1
+	AA		= 0.93,--THEME:GetMetric("PlayerStageStats", "GradePercentTier03"),	-- 0.93
+	A		= 0.8,--THEME:GetMetric("PlayerStageStats", "GradePercentTier04"),	-- 0.8
+	B		= 0.65,--THEME:GetMetric("PlayerStageStats", "GradePercentTier05"),	-- 0.65
+	C		= 0.45,
+	D		= 0.45,
+};
+
+local colors = {
+	AAAA	= "#FFE0A3",--THEME:GetMetric("PlayerStageStats", "GradePercentTier01"),	-- 1
+	AAA		= "#66E0FF",--THEME:GetMetric("PlayerStageStats", "GradePercentTier02"),	-- 1
+	AA		= "#66E0C2",--THEME:GetMetric("PlayerStageStats", "GradePercentTier03"),	-- 0.93
+	A		= "#38ceff",--THEME:GetMetric("PlayerStageStats", "GradePercentTier04"),	-- 0.8
+	B		= "#33CC33",--THEME:GetMetric("PlayerStageStats", "GradePercentTier05"),	-- 0.65
+	C		= "#CCFF99",
+	D		= "#FF0066",
+};
+
+local function UpdateGradeBar(self, MIGS, nowMIGS_MAX, DP, nowDP_MAX)
+	local d = self:GetChildren().SongMeterDisplayFrame;
+	local c = d:GetChildren();
+	local tip = c.GradeTip:GetChildren();
+	local percent = 1;
+	local gradechanged = false;
+	local PercentMIGS = MIGS/nowMIGS_MAX;
+
+	if DP == nowDP_MAX then
+		grade = "AAAA";
+	elseif MIGS == nowMIGS_MAX then
+		grade = "AAA";
+	elseif PercentMIGS >= gradePercentTier["AA"] then
+		percent = (PercentMIGS - gradePercentTier["AA"])/(1-gradePercentTier["AA"]);
+		grade = "AA";-- PercentMIGS  0.93
+	elseif PercentMIGS >= gradePercentTier["A"]  then
+		percent = (PercentMIGS - gradePercentTier["A"])/(gradePercentTier["AA"]-gradePercentTier["A"]);
+		grade = "A";-- PercentMIGS  0.8
+	elseif PercentMIGS >= gradePercentTier["B"]  then
+		percent = (PercentMIGS - gradePercentTier["B"])/(gradePercentTier["A"]-gradePercentTier["B"]);
+		grade = "B";		-- PercentMIGS  0.65
+	elseif PercentMIGS >= gradePercentTier["C"]  then
+		percent = (PercentMIGS - gradePercentTier["C"])/(gradePercentTier["B"]-gradePercentTier["C"]);
+		grade = "C";
+	else                     
+		percent = (PercentMIGS - 0)/(gradePercentTier["C"]-0);
+		grade = "D";	
+	end;
+	c.Grade:settext(grade);	
+	c.Grade:diffuse(color(colors[grade]));
+	c.Grade:diffusecolor(color(colors[grade]));
+	--c.Grade:strokecolor("#000000FF");
+	if percent > 1 then 
+	percent=1; 
+	end;
+	if percent < 0 then
+	percent =0;
+	end;
+	if grade ~= prev_grade then
+		prev_grade = grade;
+		gradechanged = true;
+	end;
+	if prev_percent ~= percent then
+		
+		prev_percent = percent;
+		tip.Tip1:stoptweening();
+		if gradechanged then
+			
+			tip.Tip1:linear(0.0);
+			tip.Tip2:linear(0.0);
+		else
+			tip.Tip1:linear(0.04);
+			tip.Tip2:linear(0.0);
+		end;
+		tip.Tip1:cropright(1-percent*1);
+		tip.Tip2:cropright(1-percent*1);
+		if percent == 1 then
+			tip.Tip2:visible(true);
+			tip.Tip1:visible(false);
+		else
+			tip.Tip1:visible(true);
+			tip.Tip2:visible(false)
+		end;
+	end;
+end;
+
 local function CreateStats( pnPlayer )
 	-- Actor Templates
 	local aLabel = LoadFont("Common Normal") .. { InitCommand=cmd(zoom,0.5;shadowlength,1;horizalign,left); };
@@ -29,6 +116,10 @@ local function CreateStats( pnPlayer )
 		MIGS		= ( tStats["W1"]*3 + tStats["W2"]*2 + tStats["W3"] - tStats["W5"]*4 - tStats["Miss"]*8 + tStats["Held"]*6 ),
 		-- (marvcount + perfcount + greatcount + goodcount + boocount + misscount)*3 + (okcount + ngcount)*6
 		MIGS_MAX	= ( (tStats["W1"] + tStats["W2"] + tStats["W3"] + tStats["W4"] + tStats["W5"] + tStats["Miss"])*3 + (tStats["Held"] + tStats["LetGo"])*6 ),
+		-- marvcount*3 + perfcount*3 + greatcount*1 - boocount*4 - misscount*8 + okcount*6
+		MIGS_MIGS		= ( tStats["W1"]*2 + tStats["W2"]*2 + tStats["W3"] - tStats["W4"] *0 - tStats["W5"]*4 - tStats["Miss"]*8 + tStats["Held"]*6 ),
+		-- (marvcount + perfcount + greatcount + goodcount + boocount + misscount)*3 + (okcount + ngcount)*6
+		MIGS_MIGS_MAX	= ( (tStats["W1"] + tStats["W2"] + tStats["W3"] + tStats["W4"] + tStats["W5"] + tStats["Miss"])*2 + (tStats["Held"] + tStats["LetGo"])*6 ),
 	};
 
 	local t = Def.ActorFrame {};
@@ -52,6 +143,51 @@ local function CreateStats( pnPlayer )
 		aText .. { Text="/"; InitCommand=cmd(x,28;y,5;vertalign,bottom;zoom,0.5;diffusealpha,0.5); };
 		aText .. { Text=string.format("%04i",tValues["MIGS_MAX"]); InitCommand=cmd(x,32;y,5;vertalign,bottom;zoom,0.5); };
 	};
+	
+	t[#t+1] = Def.ActorFrame{
+		Def.ActorFrame{
+		Name="SongMeterDisplayFrame";
+		InitCommand=cmd(xy,0,18;addy,-60;linear,0.045;addy,1;linear,0.01;addy,59);
+		--OnCommand=cmd(addy,-60;sleep,2.4;linear,0.2;addy,60);
+		Def.ActorFrame {
+			Name = "GradeTip";
+			LoadActor("framedos") .. {
+				InitCommand=cmd(setsize,(SCREEN_WIDTH*0.150)+4,8+4);
+			};
+			LoadActor( "ScoreDisplayRave") .. {
+				Name = "Tip1";
+				InitCommand=cmd(setsize,(SCREEN_WIDTH*0.150),8);
+				OnCommand=cmd(x,000;y,000;z,-000;texcoordvelocity,1,0;customtexturerect,0,0,(SCREEN_WIDTH*0.150)/256,8/32;texturewrapping,true);
+			};
+			
+			LoadActor( "maxscore") .. {
+				Name = "Tip2";
+				InitCommand=cmd(setsize,(SCREEN_WIDTH*0.150),8);
+				OnCommand=cmd(x,000;y,000;z,-000;texcoordvelocity,1,0;customtexturerect,0,0,(SCREEN_WIDTH*0.150)/256,8/32;texturewrapping,true);
+			};
+			
+			LoadActor("marco") .. {
+				InitCommand=cmd(setsize,(SCREEN_WIDTH*0.150)+4+2,8+4+2);
+			};
+			
+			
+			};
+			LoadFont("Common normal") .. {
+					Name="Grade";
+					InitCommand=cmd(zoom,0.6;horizalign,center);
+					OnCommand=cmd(strokecolor,color("#000000"));
+					Text="AAAA";
+					
+			};
+		};
+		BeginCommand=function(self)
+				if PREFSMAN:GetPreference("Center1Player")==false then
+					self:addx(-192);
+				end;
+				UpdateGradeBar(self,tValues["MIGS_MIGS"],tValues["MIGS_MIGS_MAX"],tValues["MIGS"],tValues["MIGS_MAX"]);
+		end;
+	};
+
 	return t
 end;
 
@@ -59,7 +195,8 @@ local function GetTime(self)
   local c = self:GetChildren();
 	local tss = GetTimeSinceStart();
 	local ftss = string.format("%.2d:%.2d:%.2d", tss/(60*60), tss/60%60, tss%60);
-	c.Time:settext("Jugando hace: "..ftss);
+	-- c.Time:settext("Jugando hace: "..ftss);
+	c.Time:settext("");
 end;
 
 local function showGradeImg()
@@ -264,6 +401,13 @@ local function showGradeImg()
 			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
 		};
 	end;
+	
+	if IsUsingWideScreen() == false then
+		t.BeginCommand = function(self)
+			self:addx(-100);
+		end;
+	end;
+	
 	return t;
 end;
 
@@ -280,8 +424,11 @@ t[#t+1] = Def.ActorFrame {
 	CreateStats( PLAYER_2 );
 };
 
-
 t[#t+1] = Def.ActorFrame {
 	showGradeImg();
 };
+
+
+
+
 return t

@@ -102,6 +102,7 @@ function InitUserPrefs()
 			SetUserPref(k, v)
 		end
 	end
+	
 
 	-- screen filter
 	setenv("ScreenFilterP1",0)

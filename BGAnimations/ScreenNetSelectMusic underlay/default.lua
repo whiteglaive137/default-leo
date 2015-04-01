@@ -87,10 +87,13 @@ t[#t+1] = Def.Sprite  {
 
 					if bnpath and bnpath ~= '' then
 					self:LoadBanner( "/"..bnpath );
-					(cmd(zoomtowidth,256;zoomtoheight,80;linear,0.01;diffusealpha,1;draworder,400;))(self);
+					if IsUsingWideScreen() == false then
+						(cmd(xy,SCREEN_CENTER_X-30,SCREEN_CENTER_Y+165;zoomtowidth,200;zoomtoheight,70;linear,0.01;diffusealpha,1;draworder,400;))(self)
+					else
+						(cmd(zoomtowidth,256;zoomtoheight,80;linear,0.01;diffusealpha,1;draworder,400;))(self);
+					end;
 						if groupBanner then
 							groupBanner = false;
-							
 						end;
 					else
 						SpriteOff(self);
@@ -121,7 +124,11 @@ t[#t+1] = Def.Banner {
 				if song:GetBannerPath() == bnpath then
 					if offBanner then
 						self:LoadBanner( bnpath );
-						(cmd(zoomtowidth,256;zoomtoheight,80;linear,0.01;diffusealpha,1;draworder,300;))(self);
+						if IsUsingWideScreen() == false then
+							(cmd(xy,SCREEN_CENTER_X-30,SCREEN_CENTER_Y+165;zoomtowidth,200;zoomtoheight,70;linear,0.01;diffusealpha,1;draworder,300;))(self)
+						else
+							(cmd(zoomtowidth,256;zoomtoheight,80;linear,0.01;diffusealpha,1;draworder,300;))(self);
+						end;
 						offBanner = false;
 					end;
 				else
@@ -136,7 +143,11 @@ t[#t+1] = Def.Banner {
 				if bnpath ~= nil then
 					if offBanner then
 						self:LoadBanner( bnpath );
-						(cmd(zoomtowidth,256;zoomtoheight,80;linear,0.01;diffusealpha,1;draworder,300;))(self);
+						if IsUsingWideScreen() == false then
+							(cmd(xy,SCREEN_CENTER_X-30,SCREEN_CENTER_Y+165;zoomtowidth,200;zoomtoheight,70;linear,0.01;diffusealpha,1;draworder,300;))(self)
+						else
+							(cmd(zoomtowidth,256;zoomtoheight,80;linear,0.01;diffusealpha,1;draworder,300;))(self);
+						end;
 						offBanner = false;
 					end;
 				elseif not offBanner then
@@ -172,5 +183,8 @@ local position = {
 	Difficulty_Hard = dx * 4,
 	Difficulty_Challenge = dx * 5,
 };
+
+
+
 
 return t;
