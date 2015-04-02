@@ -199,6 +199,12 @@ local function GetTime(self)
 	c.Time:settext("");
 end;
 
+local function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
+
 local function showGradeImg()
 	local t = Def.ActorFrame {};
 	local grade = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1):GetGrade();
@@ -209,14 +215,14 @@ local function showGradeImg()
 	local times = tonumber(string.sub(Time.Now(),4,5))*10000;--+tonumber(string.sub(Time.Now(),3,4))*100+tonumber(string.sub(Time.Now(),6,7))*1;
 	math.randomseed(math.abs(math.floor(stages+times)));
 	local var_rand = math.abs(math.floor((note_w1 + note_w2 - note_miss)*math.random(11)*math.random(50)+math.random(137)+note_w1*math.random(2594)));
+	var_rand = var_rand * math.floor(GetTimeSinceStart()%60);
 	local gImages = {
 		t_0 = "ramona";
 		t_1 = "smoooch";
-		t_2 = "roku";
+		t_2 = "1_roku";
 		t_3 = "taiga-tiger";
 		t_4 = "reisen";
 		t_5 = "mario-bot";
-		
 		t_6 = "skelleton-spider";
 		t_7 = "zombie1";
 		t_8 = "enderman1";
@@ -232,16 +238,157 @@ local function showGradeImg()
 		t_18 = "pigman_2";
 		t_19 = "dragon";
 		t_20 = "enderman_2";
-		
 		t_21 = "hellokitty";
 		t_22 = "hellok2";
-		
 		t_23 = "cirno";
 		t_24 = "marisa1";
 		t_25 = "sakuya";
 		t_26 = "marisa_2";
+		t_27 = "1_remillia";
+		t_28 = "2_remillia";
+		t_29 = "yoshi";
+		t_30 = "1_shyguy";
+		t_31 = "2_shyguy";
+		t_32 = "babybowser";
+		t_33 = "flandre_remillia";
+		t_34 = "1_flandre";
+		t_35 = "2_flandre";
+		t_36 = "1_kero";
+		t_37 = "2_kero";
+		t_38 = "1_jiburiru";
+		t_39 = "2_jiburiru";
+		t_40 = "1_peggy";
+		t_41 = "1_kirisaki";
+		t_42 = "2_kirisaki";
+		t_43 = "1_kanoko";
+		t_44 = "1_syo";
+		t_45 = "2_roku";
+		t_46 = "1_sora_hoshino";
+		t_47 = "1_yunta";
+		t_48 = "1_mzd";
+		t_49 = "2_mzd";
+		
 		
 		Grade_TierOther = "ramona";
+	};
+	
+	local gX = {
+		t_0 = SCREEN_CENTER_X+380;
+		t_1 = SCREEN_CENTER_X+340;
+		t_2 = SCREEN_CENTER_X+340;
+		t_3 = SCREEN_CENTER_X+340;
+		t_4 = SCREEN_CENTER_X+340;
+		t_5 = SCREEN_CENTER_X+340;
+		
+		t_6 = SCREEN_CENTER_X+340;
+		t_7 = SCREEN_CENTER_X+340;
+		t_8 = SCREEN_CENTER_X+340;
+		t_9 = SCREEN_CENTER_X+340;
+		t_10 = SCREEN_CENTER_X+340;
+		t_11 = SCREEN_CENTER_X+340;
+		t_12 = SCREEN_CENTER_X+340-10;
+		t_13 = SCREEN_CENTER_X+340-10;
+		t_14 = SCREEN_CENTER_X+340;
+		t_15 = SCREEN_CENTER_X+340-25;
+		t_16 = SCREEN_CENTER_X+340;
+		t_17 = SCREEN_CENTER_X+340;
+		t_18 = SCREEN_CENTER_X+340;
+		t_19 = SCREEN_CENTER_X+340-30;
+		t_20 = SCREEN_CENTER_X+340;
+		t_21 = SCREEN_CENTER_X+340;
+		t_22 = SCREEN_CENTER_X+340;
+		t_23 = SCREEN_CENTER_X+340-10;
+		t_24 = SCREEN_CENTER_X+340;
+		t_25 = SCREEN_CENTER_X+340;
+		t_26 = SCREEN_CENTER_X+340;
+		t_27 = SCREEN_CENTER_X+340+10;
+		t_28 = SCREEN_CENTER_X+340+10;
+		t_29 = SCREEN_CENTER_X+340+10;
+		t_30 = SCREEN_CENTER_X+340+10;
+		t_31 = SCREEN_CENTER_X+340+10;
+		t_32 = SCREEN_CENTER_X+340+10;
+		t_33 = SCREEN_CENTER_X+340-30;
+		t_34 = SCREEN_CENTER_X+340-30;
+		t_35 = SCREEN_CENTER_X+340-30;
+		t_36 = SCREEN_CENTER_X+340-10;
+		t_37 = SCREEN_CENTER_X+340+10;
+		t_38 = SCREEN_CENTER_X+340+0;
+		t_39 = 60;
+		t_40 = SCREEN_CENTER_X+340+10;
+		t_41 = SCREEN_CENTER_X+340+10;
+		t_42 = SCREEN_CENTER_X+340+10;
+		t_43 = SCREEN_CENTER_X+340+10;
+		t_44 = SCREEN_CENTER_X+340+10;
+		t_45 = SCREEN_CENTER_X+340+10;
+		t_46 = SCREEN_CENTER_X+340+10;
+		t_47 = SCREEN_CENTER_X+340+10;
+		t_48 = SCREEN_CENTER_X+340+10;
+		t_49 = SCREEN_CENTER_X+340+10;
+		t_50 = SCREEN_CENTER_X+340+10;
+		t_51 = SCREEN_CENTER_X+340+10;
+		t_52 = SCREEN_CENTER_X+340+10;
+		t_53 = SCREEN_CENTER_X+340+10;
+		
+		Grade_TierOther = SCREEN_CENTER_X+380;
+	};
+	
+	local gY = {
+		t_0 = SCREEN_CENTER_Y*2-142/2;
+		t_1 = SCREEN_CENTER_Y*2-195/2-10;
+		t_2 = SCREEN_CENTER_Y*2-200/2-10;
+		t_3 = SCREEN_CENTER_Y*2-190/2-10;
+		t_4 = (SCREEN_CENTER_Y*2-214/2)-20;
+		t_5 = (SCREEN_CENTER_Y*2-200/2)-20;
+		t_6 = (SCREEN_CENTER_Y*2-192/2)-20;
+		t_7 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_8 = (SCREEN_CENTER_Y*2-196/2)-20;
+		t_9 = (SCREEN_CENTER_Y*2-196/2)-20;
+		t_10 = (SCREEN_CENTER_Y*2-200/2)-20;
+		t_11 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_12 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_13 = (SCREEN_CENTER_Y*2-208/2)-20;
+		t_14 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_15 = (SCREEN_CENTER_Y*2-182/2)-20;
+		t_16 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_17 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_18 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_19 = (SCREEN_CENTER_Y*2-210/2)-20;
+		t_20 = (SCREEN_CENTER_Y*2-210/2)-20;
+		t_21 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_22 = (SCREEN_CENTER_Y*2-198/2)-20;
+		t_23 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_24 = (SCREEN_CENTER_Y*2-200/2)-20;
+		t_25 = (SCREEN_CENTER_Y*2-208/2)-20;
+		t_26 = (SCREEN_CENTER_Y*2-210/2)-20;
+		t_27 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_28 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_29 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_30 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_31 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_32 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_33 = (SCREEN_CENTER_Y*2-210/2)-20;
+		t_34 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_35 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_36 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_37 = (SCREEN_CENTER_Y*2-212/2)-31;
+		t_38 = (SCREEN_CENTER_Y*2-212/2)-31;
+		t_39 = (SCREEN_CENTER_Y*2-212/2)-31;
+		t_40 = (SCREEN_CENTER_Y*2-212/2)-31;
+		t_41 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_42 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_43 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_44 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_45 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_46 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_47 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_48 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_49 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_50 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_51 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_52 = (SCREEN_CENTER_Y*2-212/2)-20;
+		t_53 = (SCREEN_CENTER_Y*2-212/2)-20;
+		
+		Grade_TierOther = SCREEN_CENTER_Y*2-142/2;
 	};
 	t[#t+1] = Def.ActorFrame {
 		LoadFont("Common normal") .. {
@@ -260,151 +407,68 @@ local function showGradeImg()
 			self:SetUpdateRate( 1/30 );
 		end;
 	};
-	if var_rand%27==0 then
-		t[#t+1] = LoadActor(gImages["t_0"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+380;y,SCREEN_CENTER_Y*2-142/2;diffusealpha,1.0;);	
+	
+	local n = var_rand%(tablelength(gImages)-1);
+	-- n = 37;
+	
+	
+	if n == 39 then 
+		-- lol
+		t[#t+1] = LoadActor(gImages["t_"..n])..{
+			InitCommand=cmd(zoom,0.9;x,gX["t_"..n]-20;y,gY["t_"..n]-60;diffusealpha,0.4;);	
 		};
-	elseif var_rand%27==1 then						
-		t[#t+1] = LoadActor(gImages["t_1"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,SCREEN_CENTER_Y*2-195/2-10;diffusealpha,1.0;);	
+		
+		t[#t+1] = LoadActor("2_inv_jiburiru")..{
+			InitCommand=cmd(zoom,0.9;x,SCREEN_CENTER_X+340+20;y,(SCREEN_CENTER_Y*2-212/2)-31-60;diffusealpha,0.4;);	
 		};
-	elseif var_rand%27==2 then
-		t[#t+1] = LoadActor(gImages["t_2"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,SCREEN_CENTER_Y*2-200/2-10;diffusealpha,1.0;);	
+		
+		t[#t+1] = LoadActor("2_inv_jiburiru")..{
+			InitCommand=cmd(x,SCREEN_CENTER_X+340+0;y,(SCREEN_CENTER_Y*2-212/2)-31;diffusealpha,1.0;);	
 		};
-	elseif var_rand%27==3 then
-		t[#t+1] = LoadActor(gImages["t_3"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,SCREEN_CENTER_Y*2-190/2-10;diffusealpha,1.0;);	
+		
+		t[#t+1] = LoadActor("2_icon_jiburiru")..{
+			InitCommand=cmd(zoom,0.5;x,SCREEN_CENTER_X;y,(SCREEN_CENTER_Y*2-212/2)+40;diffusealpha,1.0;draworder,4000);	
 		};
-	elseif var_rand%27==4 then
-		t[#t+1] = LoadActor(gImages["t_4"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-214/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==5 then
-		t[#t+1] = LoadActor(gImages["t_5"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-200/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==6 then
-		t[#t+1] = LoadActor(gImages["t_6"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-192/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==7 then
-		t[#t+1] = LoadActor(gImages["t_7"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==8 then
-		t[#t+1] = LoadActor(gImages["t_8"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-196/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==9 then
-		t[#t+1] = LoadActor(gImages["t_9"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-196/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==10 then
-		t[#t+1] = LoadActor(gImages["t_10"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-200/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==11 then
-		t[#t+1] = LoadActor(gImages["t_11"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==12 then
-		t[#t+1] = LoadActor(gImages["t_12"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==13 then
-		t[#t+1] = LoadActor(gImages["t_13"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-208/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==14 then
-		t[#t+1] = LoadActor(gImages["t_14"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==15 then
-		t[#t+1] = LoadActor(gImages["t_15"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-25;y,(SCREEN_CENTER_Y*2-182/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==16 then
-		t[#t+1] = LoadActor(gImages["t_16"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==17 then
-		t[#t+1] = LoadActor(gImages["t_17"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==18 then
-		t[#t+1] = LoadActor(gImages["t_18"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==19 then
-		t[#t+1] = LoadActor(gImages["t_19"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-30;y,(SCREEN_CENTER_Y*2-210/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==20 then
-		t[#t+1] = LoadActor(gImages["t_20"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-210/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==21 then
-		t[#t+1] = LoadActor(gImages["t_21"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==22 then
-		t[#t+1] = LoadActor(gImages["t_22"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-198/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==24 then
-		t[#t+1] = LoadActor(gImages["t_24"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-200/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==25 then
-		t[#t+1] = LoadActor(gImages["t_25"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-208/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==26 then
-		t[#t+1] = LoadActor(gImages["t_26"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340;y,(SCREEN_CENTER_Y*2-210/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
-	elseif var_rand%27==23 then
-		t[#t+1] = LoadActor(gImages["t_23"])..{
-			InitCommand=cmd(x,SCREEN_CENTER_X+340-10;y,(SCREEN_CENTER_Y*2-212/2)-20;diffusealpha,1.0;);	
-		};
+		
+		math.randomseed(n);
+		local h = math.random(1,12);
+		for i = 0, 150, 1 do
+			t[#t+1] = LoadActor("2_icon_jiburiru")..{
+				InitCommand=cmd(zoom,0.2;x,SCREEN_CENTER_X;y,(SCREEN_CENTER_Y*2-212/2)+40;diffusealpha,0.7;draworder,4000;rainbow;effectperiod,0.9;playcommand,"Setup";playcommand,"Refresh");
+				SetupCommand=function(self)
+					math.randomseed(i*h);
+					self:x( math.random(-self:GetZoomedWidth()/2,SCREEN_CENTER_X*2));
+					self:y( math.random(-self:GetZoomedHeight()/2,SCREEN_CENTER_Y*2+ self:GetZoomedHeight()/2));
+					self:rotationy(math.random(0,360));
+					self:effectoffset(math.random(0,200)/100);
+				end;
+				RefreshCommand=function(self)
+					self:addy(5);
+					self:addx(5);
+					self:addrotationy(3);
+					if self:GetY() > SCREEN_CENTER_Y*2 + self:GetZoomedHeight()/2 then
+						self:y(-self:GetZoomedHeight()/2);
+					end;
+					
+					if self:GetX() > SCREEN_CENTER_X*2 + self:GetZoomedWidth()/2 then
+						self:x(-self:GetZoomedWidth()/2);
+					end;
+					
+					self:sleep(0.02);
+					self:queuecommand("Refresh");
+				end;
+			};
+		end;
+	
 	end;
+	
+	t[#t+1] = LoadActor(gImages["t_"..n])..{
+			InitCommand=cmd(x,gX["t_"..n];y,gY["t_"..n];diffusealpha,1.0;);	
+	};
 	
 	if IsUsingWideScreen() == false then
 		t.BeginCommand = function(self)
-			self:addx(-100);
+			self:addx(-120);
 		end;
 	end;
 	
