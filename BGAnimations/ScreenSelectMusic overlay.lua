@@ -52,5 +52,77 @@ local function Update(self)
 	end;
 end;
 
+t[#t+1] = LoadFont("Common normal")..{
+
+	InitCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y + 150;diffusealpha,0;playcommand,"Refresh");
+	--BeginCommand=cmd(playcommand,"Set";sleep,0.2;queuecommand,"Begin");
+	RefreshCommand=function(self)
+		local topScreen = SCREENMAN:GetTopScreen();
+		if topScreen then
+			local screenName = topScreen:GetName();
+			if screenName == "ScreenSelectMusic" then
+				
+				local children = topScreen:GetChildren();
+				local sortOrder = children.SortOrder;
+				local sortOrderFrame = children.SortOrderFrame;
+				sortOrder:zoom(0.0);
+				sortOrderFrame:zoom(0.0);
+				text = "";
+				x = 0;
+				for name, child in pairs(children) do
+					x = x + string.len(name);
+					text = text .. name .. " ";
+					if(x > 40) then
+						text = text .. "\n";
+						x = 0;
+					end;
+				end
+				self:settext(text);
+
+				(cmd(zoom,0.0;diffuse,color("#FF0000");strokecolor,color("#202020");))(self);
+				
+				-- local ChatInput = topScreen:GetChild("ChatInput");
+				-- local ChatInputText = ChatInput:GetText();
+				
+				
+				-- --self:settext(ChatInputText);
+				
+				-- if string.len(prevText) > 0 and ChatInputText == "" then
+					-- --self:settext(prevText);
+					-- searchSong(self,prevText);
+				-- end;
+				
+				-- prevText = ChatInputText;
+				
+				-- -- self:settext();
+
+				-- -- if MusicWheel:GetSelectedType() ~= 2 then
+					-- -- local bnpath = SONGMAN:GetSongGroupBannerPath(MusicWheel:GetWheelItem(0+6):GetText());
+
+					-- -- if bnpath and bnpath ~= '' then
+					-- -- self:LoadBanner( "/"..bnpath );
+					-- -- (cmd(zoomtowidth,256;zoomtoheight,80;linear,0.01;diffusealpha,1;draworder,400;))(self);
+						-- -- if groupBanner then
+							-- -- groupBanner = false;
+							
+						-- -- end;
+					-- -- else
+						-- -- SpriteOff(self);
+						-- -- groupBanner = true;
+					-- -- end;	
+				-- -- else
+					-- -- SpriteOff(self);
+					-- -- groupBanner = true;
+				-- -- end;
+			end;
+		end;
+
+		self:sleep(0.1);
+		self:queuecommand("Refresh");
+	end;
+};
+
+t[#t+1] = LoadActor("searchbar")
+
 t.InitCommand=cmd(SetUpdateFunction,Update);
 return t
