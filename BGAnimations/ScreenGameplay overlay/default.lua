@@ -205,7 +205,7 @@ t[#t+1] = Def.ActorFrame{
 				self:addx(-192);
 			end;
 			self:SetUpdateFunction( UpdateGradeBar );
-			self:SetUpdateRate( 1/30 );
+			self:SetUpdateRate( 1/15 );
 	end;
 };
 
@@ -243,6 +243,8 @@ t[#t+1] = Def.ActorFrame{
 		PercentMIGS = MIGS / nowMIGS_MAX;
 		end;
 };
+
+t[#t+1] = LoadActor("keycounter")
 
 
 

@@ -1,3 +1,5 @@
+
+
 local function GraphDisplay( pn )
 	local t = Def.ActorFrame {
 		Def.GraphDisplay {

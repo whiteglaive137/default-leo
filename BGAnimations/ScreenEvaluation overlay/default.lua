@@ -181,9 +181,6 @@ local function CreateStats( pnPlayer )
 			};
 		};
 		BeginCommand=function(self)
-				if PREFSMAN:GetPreference("Center1Player")==false then
-					self:addx(-192);
-				end;
 				UpdateGradeBar(self,tValues["MIGS_MIGS"],tValues["MIGS_MIGS_MAX"],tValues["MIGS"],tValues["MIGS_MAX"]);
 		end;
 	};
@@ -478,19 +475,25 @@ end;
 
 
 local t = Def.ActorFrame {};
-GAMESTATE:IsPlayerEnabled(PLAYER_1)
-t[#t+1] = Def.ActorFrame {
-	InitCommand=cmd(hide_if,not GAMESTATE:IsPlayerEnabled(PLAYER_1);x,WideScale(math.floor(SCREEN_CENTER_X*0.3)-8,math.floor(SCREEN_CENTER_X*0.5)-8);y,SCREEN_CENTER_Y-34);
-	CreateStats( PLAYER_1 );
-};
-t[#t+1] = Def.ActorFrame {
-	InitCommand=cmd(hide_if,not GAMESTATE:IsPlayerEnabled(PLAYER_2);x,WideScale(math.floor(SCREEN_CENTER_X*1.7)+8,math.floor(SCREEN_CENTER_X*1.5)+8);y,SCREEN_CENTER_Y-34);
-	CreateStats( PLAYER_2 );
-};
 
 t[#t+1] = Def.ActorFrame {
 	showGradeImg();
 };
+
+t[#t+1] = Def.ActorFrame {
+	InitCommand=cmd(hide_if,not GAMESTATE:IsPlayerEnabled(PLAYER_1);x,WideScale(math.floor(SCREEN_CENTER_X*0.3)-8,math.floor(SCREEN_CENTER_X*0.22)-8);y,SCREEN_CENTER_Y+140;z,999);
+	CreateStats( PLAYER_1 );
+};
+t[#t+1] = Def.ActorFrame {
+	InitCommand=cmd(hide_if,not GAMESTATE:IsPlayerEnabled(PLAYER_2);x,WideScale(math.floor(SCREEN_CENTER_X*1.7)+8,math.floor(SCREEN_CENTER_X*1.78)+8);y,SCREEN_CENTER_Y+140);
+	CreateStats( PLAYER_2 );
+};
+
+if GAMESTATE:GetNumPlayersEnabled() == 1 then
+	t[#t+1] = LoadActor("scoreboard")
+end;
+
+
 
 
 
